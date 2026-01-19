@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+const Listing = require("./models/listing")
 
 
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust"
@@ -8,7 +9,7 @@ const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust"
 main()
     .then(()=>{
      console.log("connect to Db");
-      })
+       })
     .catch((err)=>{
      console.log(err);
      });
@@ -19,6 +20,21 @@ async function main(){
 
 app.get("/",(req,res)=>{
      res.send("Hi, I am root");
+});
+
+app.get("/testlisting",async(req,res)=>{
+     let sampleListing = new Listing({
+          title:"My New Villa",
+          description:"by the beach",
+          price:1200,
+          location:"calanguate,Goa",
+          country: "India",
+     });
+
+     await sampleListing.save();
+     console.log("sample was saved");
+     res.send("successfull testing");
+     
 });
 
 app.listen(8080,()=>{
