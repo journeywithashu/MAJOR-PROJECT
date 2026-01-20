@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const Listing = require("./models/listing")
 
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust"
+const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 
 main()
     .then(()=>{
@@ -17,6 +17,7 @@ main()
 async function main(){
      await mongoose.connect(MONGO_URL);
 }
+
 
 app.get("/",(req,res)=>{
      res.send("Hi, I am root");
