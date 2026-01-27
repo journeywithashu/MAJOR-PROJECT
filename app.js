@@ -30,8 +30,14 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname,"/public"))),
 
 
-app.get("/",(req,res)=>{
-     res.send("Hi, I am root");
+// app.get("/",(req,res)=>{
+//      res.send("Hi, I am root");
+// });
+
+//root route -> EJS page
+app.get("/",async(req,res)=>{
+     const allListings = await Listing.find({});
+     res.render("listings/index",{allListings});
 });
 
 
@@ -86,9 +92,8 @@ app.delete("/listings/:id",async(req,res)=>{
    let deletedListing = await Listing.findByIdAndDelete(id);
    console.log(deletedListing);
    res.redirect("/listings");
-   
-
 });
+
 
 
 
