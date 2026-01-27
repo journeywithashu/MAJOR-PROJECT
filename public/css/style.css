@@ -94,8 +94,9 @@ body{
 
 /* Edit page  */
 .edit-btn{
-     background-color: #e98d8d !important;
+     background-color: #fe424d !important;
      border: none !important;
+     margin-bottom: 2rem;
 }
 /* Show page */
 .show-img{

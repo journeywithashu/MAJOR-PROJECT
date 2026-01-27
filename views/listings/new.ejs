@@ -9,6 +9,7 @@
             <input name="listing[title]" placeholder="enter title" type="text"  class="form-control"
             required
             />
+            <div class="valid-feedback">Title look good!</div>
           </div>
           <div class="mb-3">
                 <label for="description" class="form-label">Description</label>       
@@ -27,9 +28,11 @@
           <div class="row">
            <div class="mb-3 col-md-4">
            <label for="price" class="form-label">Price</label>  
-            <input name="listing[price]" placeholder="enter price" type="number"
+            <input name="listing[price]" placeholder="enter price" 
              class="form-control"
              required />
+          <div class="invalid-feedback">Please enter valid price</div>
+
            </div>
            <div class="mb-3 col-md-8">
            <label for="country" class="form-label">Country</label>  
@@ -37,6 +40,8 @@
            type="text" 
            class="form-control" 
            required />
+          <div class="invalid-feedback">Please enter the country</div>
+
           </div>
           </div>
          
@@ -45,7 +50,9 @@
             <input name="listing[location]" placeholder="enter location"
              type="text" 
              class="form-control"
-             required>  
+             required />  
+          <div class="invalid-feedback">Please enter the location</div>
+
           </div>
           
           <br>
