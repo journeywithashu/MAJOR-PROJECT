@@ -5,7 +5,8 @@ const Listing = require("./models/listing")
 const path = require("path");
 const methodOverride = require("method-override")
 const ejsMate = require("ejs-mate");
-const wrapAsync = require("./utils/wrapAsyc");
+const wrapAsync = require("./utils/wrapAsyc.js");
+const ExpressError = require("./utils/ExpressError.js");
 
 
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
@@ -62,7 +63,9 @@ app.get("/listings/:id",async(req,res)=>{
 });
 
 //Create Route
-app.post("/listings",wrapAsync(async(req,res,next)=>{
+app.post("/listings",
+     wrapAsync(async(req,res,next)=>{
+          if(!req.body.listing) throw new ExpressError(400,"Invalid Listing Data");
   const newListing = new Listing(req.body.listing);
   await newListing.save();
   res.redirect("/listings");
@@ -112,8 +115,13 @@ app.delete("/listings/:id",async(req,res)=>{
      
 // });
 
+app.use((req,res,next)=>{
+     next(new ExpressError(404,"Page not found!"));
+});
+
 app.use((err,req,res,next)=>{
-     res.send("Something went wrong!");
+     let {statusCode = 500, message="something went wrong"} = err;
+     res.status(statusCode).send(message);
 });
 
 app.listen(8080,()=>{
