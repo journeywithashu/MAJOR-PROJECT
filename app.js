@@ -84,7 +84,20 @@ app.post("/listings",validateListing,
          if(result.error){
           throw new ExpressError(400,result.error);
          }
-         
+
+  const listingData = { ...req.body.listing };
+  if (typeof listingData.image === "string") {
+       if (listingData.image.trim() === "") {
+            delete listingData.image;
+       } else {
+            listingData.image = { url: listingData.image };
+       }
+  } else if (listingData.image && typeof listingData.image.url === "string") {
+       if (listingData.image.url.trim() === "") {
+            delete listingData.image;
+       }
+  }
+  const newListing = new Listing(listingData);
   await newListing.save();
   res.redirect("/listings");
 
