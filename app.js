@@ -37,38 +37,10 @@ app.use("/listings",listings);
 app.use("/listings/:id/reviews", reviews);
 
 
-// app.get("/",(req,res)=>{
-//      res.send("Hi, I am root");
-// });
-
-//root route -> EJS page
 app.get("/",(req,res)=>{
      res.redirect("/listings");
 });
 
-
-
-
-
-
-
-
-
-
-// app.get("/testlisting",async(req,res)=>{
-//      let sampleListing = new Listing({
-//           title:"My New Villa",
-//           description:"by the beach",
-//           price:1200,
-//           location:"calanguate,Goa",
-//           country: "India",
-//      });
-
-//      await sampleListing.save();
-//      console.log("sample was saved");
-//      res.send("successfull testing");
-     
-// });
 
 app.use((req,res,next)=>{
      next(new ExpressError(404,"Page not found!"));
