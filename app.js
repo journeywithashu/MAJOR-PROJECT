@@ -5,6 +5,7 @@ const path = require("path");
 const methodOverride = require("method-override")
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
+const session = require("express-session");
 
 
 const listings = require("./routes/listing.js");
@@ -31,8 +32,16 @@ app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
 app.use(express.urlencoded({extended:true}));
 app.use(methodOverride("_method")); 
-app.use(express.static(path.join(__dirname,"/public"))),
+app.use(express.static(path.join(__dirname,"/public")));
 
+const sessionOptions = {
+secret:"mysecret",
+resave: false,
+saveUninitialized: true,
+};
+app.use(session(sessionOptions));
+
+app.use(session(sessionOptions));
 app.use("/listings",listings);
 app.use("/listings/:id/reviews", reviews);
 
