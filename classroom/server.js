@@ -18,17 +18,26 @@ app.set("views",path.join(__dirname,"views"));
 app.use(session(sessionOptions));
 app.use(flash());
 
+app.use((req,res,next)=>{
+     res.locals.success = req.flash("success");
+     res.locals.error = req.flash("error");
+     next();
+});
+
 app.get('/register', (req, res) => {
      let {name ="annonymus"} = req.query;
      req.session.name = name;
-     req.flash("success", "you have registered successfully");
-     console.log(req.session.name);
-     
-     res.send(name);
+     if(name === "annonymus"){
+          req.flash("error", "you have to provide a name");
+     }else{
+          req.flash("success", "you have registered successfully");
+     }
+     res.redirect("/hello");
 });
 
 app.get("/hello",(req,res)=>{
-     res.render("page.ejs",{name:req.session.name,msg:req.flash("success")});
+     
+     res.render("page.ejs",{name:req.session.name});
 });
 
 
