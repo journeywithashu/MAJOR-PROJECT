@@ -69,6 +69,15 @@ app.use((req,res,next)=>{
      next();
 });
 
+app.get("/registerUser",async(req,res)=>{
+     const user = new User({
+          email:"student@gamail.com",
+          username:"student"
+     });
+     const newUser = await User.register(user,"helloworld");
+     res.send(newUser);
+});
+
 app.use("/listings",listings);
 app.use("/listings/:id/reviews", reviews);
 
