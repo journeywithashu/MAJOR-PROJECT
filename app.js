@@ -12,8 +12,11 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 
 
-const listings = require("./routes/listing.js");
-const reviews = require("./routes/review.js");
+
+const listingRoute = require("./routes/listing.js");
+const reviewRoute = require("./routes/review.js");
+const userRoutes = require("./routes/user.js");
+
 
 
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
@@ -78,8 +81,9 @@ app.get("/registerUser",async(req,res)=>{
      res.send(newUser);
 });
 
-app.use("/listings",listings);
-app.use("/listings/:id/reviews", reviews);
+app.use("/listings",listingRoute);
+app.use("/listings/:id/reviews", reviewRoute);
+app.use("/",userRoutes);
 
 
 
