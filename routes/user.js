@@ -37,4 +37,14 @@ async(req,res)=>{
      req.flash("success", "welcome back to wanderlust! you are login successfully ");
      res.redirect("/listings");
 });
+
+router.get("/logout",(req,res)=>{
+     req.logout((err)=>{
+          if(err){
+               return next(err);
+          }
+          req.flash("success","You have logged out successfully!");
+          res.redirect("/listings");
+     });
+});
 module.exports = router;
