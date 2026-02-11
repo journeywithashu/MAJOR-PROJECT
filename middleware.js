@@ -1,3 +1,8 @@
+const Listing = require("./models/listing");
+const ExpressError = require("./utils/ExpressError.js");
+const { listingSchema,reviewSchema } = require("./schema.js");
+
+
 module.exports.isLoggedIn = (req,res,next)=>{
      console.log(req.user);
      
@@ -14,4 +19,35 @@ module.exports.savedRedirectURL = (req,res,next)=>{
           res.locals.redirectURL = req.session.redirectURL;
      }
      next();
+};
+
+module.exports.isOwner = async(req,res,next)=>{
+     let {id} = req.params;
+     const listing = await Listing.findById(id);
+     if(!listing.owner._id.equals(req.user._id)){
+     req.flash("error","you don't have permission to do that!");
+     return res.redirect(`/listings/${id}`);
+}              
+     next();
+};
+
+
+module.exports.validateListing = (req,res,next)=>{
+     const {error} = listingSchema.validate(req.body);
+     if(error){
+          let errorMsg = error.details.map(el=>el.message).join(",");
+          throw new ExpressError(400,errorMsg);
+     }else{
+          next();
+     }
+};
+
+module.exports.validateReview = (req,res,next)=>{
+     const {error} = reviewSchema.validate(req.body);
+     if(error){
+          let errorMsg = error.details.map(el=>el.message).join(",");
+          throw new ExpressError(400,errorMsg);
+     }else{
+          next();
+     }
 };

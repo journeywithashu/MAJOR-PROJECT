@@ -17,7 +17,6 @@
 </div>
 
 <br>
-<% if(currUser && currUser._id.equals(listing.owner._id)){ %>
 
 <div class="btns">
 <a href="/listings/<%= listing._id %>/edit" 
@@ -29,7 +28,6 @@
      <button class="btn btn-dark  offset-5">
       Delete</button>
 
-      <%} %>
  </form>
 </div>
 <hr>

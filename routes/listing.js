@@ -1,21 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const wrapAsync = require("../utils/wrapAsyc.js");
-const ExpressError = require("../utils/ExpressError.js");
 const Listing = require("../models/listing.js");
-const {isLoggedIn} = require("../middleware.js");
+const {isLoggedIn,isOwner,validateListing} = require("../middleware.js");
 
 const { listingSchema , reviewSchema} = require("../schema.js");
 
-const validateListing = (req,res,next)=>{
-     const {error} = listingSchema.validate(req.body);
-     if(error){
-          let errorMsg = error.details.map(el=>el.message).join(",");
-          throw new ExpressError(400,errorMsg);
-     }else{
-          next();
-     }
-};
+
 
 
 //Index Route
@@ -33,7 +24,9 @@ router.get("/new",isLoggedIn,(req,res)=>{
 
 
 //Show Route
-router.get("/:id",wrapAsync(async(req,res)=>{
+router.get(
+     "/:id",
+     wrapAsync(async(req,res)=>{
      let {id} = req.params;
      const listing = await Listing.findById(id).populate("reviews").populate("owner");
      if(!listing){
@@ -64,6 +57,7 @@ router.post( "/",
  
 router.get("/:id/edit",
      isLoggedIn,
+     isOwner,
      wrapAsync(async(req,res)=>{
 let {id} = req.params;
  const listing = await Listing.findById(id);
@@ -78,10 +72,11 @@ let {id} = req.params;
 //UpdateRoute
 router.put("/:id",
      isLoggedIn,
+     isOwner,
      validateListing,
      wrapAsync(async(req,res)=>{
-     let {id} = req.params; 
-    await Listing.findByIdAndUpdate(id,{...req.body.listing});
+     let {id} = req.params;
+     await Listing.findByIdAndUpdate(id,{...req.body.listing});
      req.flash("success","Successfully updated the listing!");
     res.redirect(`/listings/${id}`);
 })
@@ -90,6 +85,7 @@ router.put("/:id",
 //Delete Route
 router.delete("/:id",
      isLoggedIn,
+     isOwner,
      wrapAsync(async(req,res)=>{
     let {id} = req.params; 
    let deletedListing = await Listing.findByIdAndDelete(id);
