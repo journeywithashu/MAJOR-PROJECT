@@ -52,7 +52,7 @@
     <div class="mb-3">
       <button class="btn btn-dark">Submit</button>
     </div>
-  </form>
+  </form> 
   <% } %>
   
   <p><b>All Reviews </b></p>
@@ -60,7 +60,7 @@
    <% for(let review of listing.reviews){ %>
       <div class="card col-5 mb-3  ms-3">
         <div class="card-body">
-          <h5 class="card-title">Jan Doe</h5>
+          <h5 class="card-title">@<%=review.author.username %></h5>
           <p class="card-text"><%= review.comment %></p>
           <p class="card-text"><%= review.rating %> stars</p>
           <form method="post" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" class="mb-3">
