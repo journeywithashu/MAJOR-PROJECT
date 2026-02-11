@@ -6,14 +6,13 @@ const {isLoggedIn,isOwner,validateListing} = require("../middleware.js");
 
 const { listingSchema , reviewSchema} = require("../schema.js");
 
+const listingController = require("../controllers/listings.js");
+
 
 
 
 //Index Route
-router.get("/",wrapAsync(async(req,res)=>{
-     const allListings = await Listing.find({});
-     res.render("listings/index.ejs",{allListings});
-})
+router.get("/",wrapAsync(listingController.index)
 );
 
 //New Route
