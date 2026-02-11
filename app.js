@@ -63,6 +63,9 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 
 app.use((req,res,next)=>{
      res.locals.success = req.flash("success");
@@ -72,14 +75,14 @@ app.use((req,res,next)=>{
      next();
 });
 
-app.get("/registerUser",async(req,res)=>{
-     const user = new User({
-          email:"student@gamail.com",
-          username:"student"
-     });
-     const newUser = await User.register(user,"helloworld");
-     res.send(newUser);
-});
+// app.get("/registerUser",async(req,res)=>{
+//      const user = new User({
+//           email:"student@gamail.com",
+//           username:"student"
+//      });
+//      const newUser = await User.register(user,"helloworld");
+//      res.send(newUser);
+// });
 
 app.use("/listings",listingRoute);
 app.use("/listings/:id/reviews", reviewRoute);
