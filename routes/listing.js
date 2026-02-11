@@ -9,50 +9,41 @@ const { listingSchema , reviewSchema} = require("../schema.js");
 const listingController = require("../controllers/listings.js");
 
 
-
-
-//Index Route
-router.get("/",wrapAsync(listingController.index)
-);
-
-//New Route
-router.get("/new",isLoggedIn,listingController.renderNewForm);
-
-
-//Show Route
-router.get(
-     "/:id",
-     wrapAsync(listingController.showListing)
-);
-
-//Create Route
-router.post( "/",
+router.route("/")
+.get(wrapAsync(listingController.index)
+)
+.post( 
      isLoggedIn,
      validateListing,
      wrapAsync(listingController.createListing)
 );
 
 
+//New Route
+router.get("/new",isLoggedIn,listingController.renderNewForm);
+
+router.route("/:id")
+.get(
+     wrapAsync(listingController.showListing)
+)
+.put(
+     isLoggedIn,
+     isOwner,
+     validateListing,
+     wrapAsync(listingController.updatingListing)
+)
+.delete(
+     isLoggedIn,
+     isOwner,
+     wrapAsync(listingController.deleteListing));
+
 //Edit Route
- 
-router.get("/:id/edit",
+ router.get("/:id/edit",
      isLoggedIn,
      isOwner,
      wrapAsync(listingController.renderEditForm)
 ); 
 
-//UpdateRoute
-router.put("/:id",
-     isLoggedIn,
-     isOwner,
-     validateListing,
-     wrapAsync(listingController.updatingListing)
-);
 
-//Delete Route
-router.delete("/:id",
-     isLoggedIn,
-     isOwner,
-     wrapAsync(listingController.deleteListing));
 
 module.exports = router;
