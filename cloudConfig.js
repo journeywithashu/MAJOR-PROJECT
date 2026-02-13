@@ -9,10 +9,8 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: {
-    folder: 'wanderlust_DEV',
-    allowedformats: ['jpeg', 'png', 'jpg'],
-  },
+  folder: "wanderlust_DEV",
+  allowedFormats: ["jpeg", "png", "jpg"],
 });
 
 module.exports = {

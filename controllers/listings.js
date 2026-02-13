@@ -33,6 +33,23 @@ module.exports.showListing = async(req,res)=>{
 module.exports.createListing = async(req,res)=>{
      const newListing = new Listing(req.body.listing);
      newListing.owner = req.user._id;
+
+     if(!req.file){
+          req.flash("error","Please upload an image!");
+          return res.redirect("/listings/new");
+     }
+
+     let url = req.file.path || req.file.url || req.file.secure_url;
+     let filename = req.file.filename || req.file.public_id;
+
+     if(!url || !filename){
+          req.flash("error","Image upload failed. Please try again.");
+          return res.redirect("/listings/new");
+     }
+
+     newListing.image = { url, filename };
+     console.log(url,"....",filename);
+
      await newListing.save();
      req.flash("success","Successfully made a new listing!");
      res.redirect("/listings");
