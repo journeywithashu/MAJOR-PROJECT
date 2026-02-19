@@ -1,8 +1,7 @@
 if (process.env.NODE_ENV !== "production") {
      require("dotenv").config();
 }
-console.log(process.env.SECRET);
-require("dotenv").config()
+
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -11,6 +10,7 @@ const methodOverride = require("method-override")
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session");
+const { MongoStore } = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -26,54 +26,13 @@ const userRoutes = require("./routes/user.js");
 
 
 
-<<<<<<< HEAD
-//const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const MONGO_URL = process.env.ATLASDB_URL || process.env.MONGO_CONNECTION_URL;
 
-const dbUrl = process.env.ATLASDB_URL;
-console.log("DB URL:", process.env.ATLASDB_URL);
-
-
-// main()
-//     .then(()=>{
-//      console.log("connect to Db");
-//        })
-//     .catch((err)=>{
-//      console.log(err);
-//      });
-
-// async function main(){
-//      await mongoose.connect(dbUrl);
-// }
-
-const connectDb = async()=>{
-    try{
-     console.log(dbUrl);
-     const db =  await mongoose.connect(dbUrl);
-     if(db?.connection?.host){
-          console.log("db is connected")
+async function connectDb() {
+     if (!MONGO_URL) {
+          throw new Error("Missing Mongo connection URL in .env");
      }
-     else{
-          console.log("not connected")
-          process.exit(1);
-     }
-    }catch(err){
-     console.log(err);
-     console.log(err?.message)
-    }
-=======
-const MONGO_URL = process.env.MONGO_CONNECTION_URL;
-
-main()
-     .then(() => {
-          console.log("connected to Db");
-     })
-     .catch((err) => {
-          console.log("url, ", MONGO_URL, err);
-     });
-
-async function main() {
-     await mongoose.connect(MONGO_URL);
->>>>>>> 3d10985494ea691aec581e256109f748af1ae430
+     await mongoose.connect(MONGO_URL, { serverSelectionTimeoutMS: 10000 });
 }
 
 
@@ -85,7 +44,31 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "/public")));
 
+
+
+const store = MongoStore.create({
+     mongoUrl: MONGO_URL,
+     crypto: {
+          secret: "mysecret"
+     },
+     touchAfter: 24 * 3600,
+});
+
+// const store = MongoStore.create({
+//      mongoUrl:MONGO_URL,
+//      crypto:{
+//           secret:"mysupersecret"
+//      },
+//      touchAfter:24 * 3600,
+// });
+
+store.on("error",(err)=>{
+     console.log("ERROR in MONGO SESSION STORE",err);
+     
+});
+
 const sessionOptions = {
+     store,
      secret: "mysecret",
      resave: false,
      saveUninitialized: true,
@@ -99,6 +82,8 @@ const sessionOptions = {
 app.get("/", (req, res) => {
      res.redirect("/listings");
 });
+
+
 
 
 app.use(session(sessionOptions));
@@ -144,14 +129,16 @@ app.use((err, req, res, next) => {
      res.status(statusCode).render("error.ejs", { message, err });
 });
 
-<<<<<<< HEAD
-app.listen(8080,()=>{
-     connectDb();
-=======
-app.listen(8080, () => {
->>>>>>> 3d10985494ea691aec581e256109f748af1ae430
-     console.log("server is listening to port 8080");
-
-});
+connectDb()
+     .then(() => {
+          console.log("connected to Db");
+          app.listen(8080, () => {
+               console.log("server is listening to port 8080");
+          });
+     })
+     .catch((err) => {
+          console.error("Mongo connection failed:", err.message);
+          process.exit(1);
+     });
 
 
