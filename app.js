@@ -1,6 +1,6 @@
-if(process.env.NODE_ENV !== "production"){
+if (process.env.NODE_ENV !== "production") {
      require("dotenv").config();
-}   
+}
 console.log(process.env.SECRET);
 
 const express = require("express");
@@ -26,40 +26,40 @@ const userRoutes = require("./routes/user.js");
 
 
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const MONGO_URL = process.env.MONGO_CONNECTION_URL;
 
 main()
-    .then(()=>{
-     console.log("connect to Db");
-       })
-    .catch((err)=>{
-     console.log(err);
+     .then(() => {
+          console.log("connected to Db");
+     })
+     .catch((err) => {
+          console.log("url, ", MONGO_URL, err);
      });
 
-async function main(){
+async function main() {
      await mongoose.connect(MONGO_URL);
 }
 
 
 app.engine('ejs', ejsMate);
-app.set("view engine","ejs");
-app.set("views",path.join(__dirname,"views"));
-app.use(express.urlencoded({extended:true}));
-app.use(methodOverride("_method")); 
-app.use(express.static(path.join(__dirname,"/public")));
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride("_method"));
+app.use(express.static(path.join(__dirname, "/public")));
 
 const sessionOptions = {
-secret:"mysecret",
-resave: false, 
-saveUninitialized: true,
-cookie: {
-     expires:+ 7 * 1000 * 60 * 60 * 24, // 7 day
-     maxAge:+ 7 * 1000 * 60 * 60 * 24, // 7 day
-     httpOnly: true
- },
+     secret: "mysecret",
+     resave: false,
+     saveUninitialized: true,
+     cookie: {
+          expires: + 7 * 1000 * 60 * 60 * 24, // 7 day
+          maxAge: + 7 * 1000 * 60 * 60 * 24, // 7 day
+          httpOnly: true
+     },
 };
- 
-app.get("/",(req,res)=>{
+
+app.get("/", (req, res) => {
      res.redirect("/listings");
 });
 
@@ -74,7 +74,7 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 
-app.use((req,res,next)=>{
+app.use((req, res, next) => {
      res.locals.success = req.flash("success");
      res.locals.error = req.flash("error");
      res.locals.currUser = req.user;
@@ -90,26 +90,26 @@ app.use((req,res,next)=>{
 //      res.send(newUser);
 // });
 
-app.use("/listings",listingRoute);
+app.use("/listings", listingRoute);
 app.use("/listings/:id/reviews", reviewRoute);
-app.use("/",userRoutes);
+app.use("/", userRoutes);
 
 
 
 
-app.use((req,res,next)=>{
-     next(new ExpressError(404,"Page not found!"));
+app.use((req, res, next) => {
+     next(new ExpressError(404, "Page not found!"));
 });
 
-app.use((err,req,res,next)=>{
-     let {statusCode = 500, message="something went wrong"} = err;
+app.use((err, req, res, next) => {
+     let { statusCode = 500, message = "something went wrong" } = err;
      //res.status(statusCode).send(message);
-     res.status(statusCode).render("error.ejs",{message,err});
+     res.status(statusCode).render("error.ejs", { message, err });
 });
 
-app.listen(8080,()=>{
+app.listen(8080, () => {
      console.log("server is listening to port 8080");
-     
+
 });
 
 
