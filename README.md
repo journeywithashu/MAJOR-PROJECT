@@ -40,16 +40,30 @@ It is designed to simulate a production-ready web application environment.
 ## 📂 Project Structure
 MAJOR-PROJECT
 │
-├── controllers/
-├── init/
-├── models/
-├── public/
-├── routes/
-├── utils/
-├── views/
+├── controllers/        # Business logic
+│   └── (controller files)
 │
-├── app.js
-├── cloudConfig.js
-├── schema.js
-├── package.json
-└── README.md
+├── init/               # Initial configuration & setup
+│
+├── models/             # Database models
+│   └── (model files)
+│
+├── public/             # Static files
+│   ├── css/
+│   ├── js/
+│   └── images/
+│
+├── routes/             # Application routes
+│   └── (route files)
+│
+├── utils/              # Utility/helper functions
+│
+├── views/              # EJS templates
+│   ├── partials/
+│   └── (ejs files)
+│
+├── app.js              # Main server file
+├── cloudConfig.js      # Cloud configuration
+├── schema.js           # Data schema definition
+├── package.json        # Project metadata & dependencies
+└── README.md           # Project documentation
